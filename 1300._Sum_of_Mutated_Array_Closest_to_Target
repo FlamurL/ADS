@@ -1,0 +1,51 @@
+/*You can find the problem description here: https://leetcode.com/problems/sum-of-mutated-array-closest-to-target/description/*/
+
+class Solution {
+    public int findBestValue(int[] arr, int target) {
+        
+        Arrays.sort(arr);
+      
+        int n = arr.length; 
+        int[] prefixSum = new int[n + 1];
+        int maxValue = 0; 
+        for (int i = 0; i < n; ++i) {
+            prefixSum[i + 1] = prefixSum[i] + arr[i];
+            maxValue = Math.max(maxValue, arr[i]);
+        }
+      
+
+        int bestValue = 0; 
+        int minDiff = Integer.MAX_VALUE;
+
+        for (int candidateValue = 0; candidateValue <= maxValue; ++candidateValue) {
+      
+            int index = binarySearch(arr, candidateValue);
+
+            int difference = Math.abs(prefixSum[index] + (n - index) * candidateValue - target);
+          
+          
+            if (minDiff > difference) {
+                minDiff = difference;
+                bestValue = candidateValue;
+            }
+        }
+        return bestValue;
+    }
+
+   
+    private int binarySearch(int[] arr, int x) {
+        int left = 0, right = arr.length;
+        while (left < right) {
+            
+            int mid = (left + right) >> 1;
+          
+           
+            if (arr[mid] > x) {
+                right = mid; 
+            } else {
+                left = mid + 1; 
+            }
+        }
+        return left;
+    }
+}
