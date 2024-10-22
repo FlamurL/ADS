@@ -1,0 +1,56 @@
+/*
+For a given array of random numbers given from standard input, perform a shift of all zeros at the beginning of the sequence. Print the transformed array to standard output.
+
+For example:
+
+Input
+12
+1 9 8 4 0 0 2 7 0 6 0 9
+
+Result
+Transformiranata niza e:
+0 0 0 0 1 9 8 4 2 7 6 9
+
+ */
+
+import java.util.Scanner;
+
+public class PushZero
+{
+    static void pushZerosToBeginning(int arr[], int n)
+    {
+        System.out.println("Transformiranata niza e:");
+        int k=0;
+        int[] newarr=new int[n];
+        int s=0;
+        for(int i=0; i<n; i++){
+            if(arr[i]==0) {
+                newarr[s]=0;
+                s++;
+            }
+        }
+
+        for(int i=0;i<n;i++){
+            if(arr[i]!=0) {
+                newarr[s]=arr[i];
+                s++;
+
+            }
+        }
+        for(int i=0;i<n;i++){
+            System.out.print(newarr[i]+" ");
+        }
+
+    }
+
+    public static void main (String[] args)
+    {
+        Scanner scanner=new Scanner(System.in);
+        int n=scanner.nextInt();
+        int[] nums=new int[n];
+        for(int i=0;i<n;i++){
+            nums[i]=scanner.nextInt();
+        }
+        pushZerosToBeginning(nums,n);
+    }
+}
