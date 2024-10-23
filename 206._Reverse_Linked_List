@@ -1,0 +1,27 @@
+/*You can find the problem description here: https://leetcode.com/problems/reverse-linked-list/*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode reverseList(ListNode head) {
+        ListNode c=head;
+        ListNode temp=new ListNode(-1);
+       while(c!=null){
+        ListNode nx=c.next;
+        c.next=temp.next;
+        temp.next=c;
+        c=nx;
+
+       }
+  return temp.next;
+    }
+  
+}
