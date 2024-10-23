@@ -1,0 +1,39 @@
+/*You can find the problem description here: https://leetcode.com/problems/middle-of-the-linked-list/*/
+
+/**
+ * Definition for singly-linked list.
+ * public class ListNode {
+ *     int val;
+ *     ListNode next;
+ *     ListNode() {}
+ *     ListNode(int val) { this.val = val; }
+ *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
+ * }
+ */
+class Solution {
+    public ListNode middleNode(ListNode head) {
+        int cnt=0;
+        ListNode curr=head;
+        while(head!=null)
+        {
+            cnt++;
+            head=head.next;
+        }
+        
+            cnt=cnt/2+1;
+            int z=0;
+            ListNode sol=null;;
+            while(curr!=null){
+                z++;
+                if(z==cnt){ 
+              
+sol=curr;
+break;
+                }
+                curr=curr.next;
+            }
+        return sol;
+     
+        
+    }
+}
