@@ -1,0 +1,16 @@
+/*You can find the problem description here: https://leetcode.com/problems/number-of-1-bits/description/*/
+
+
+class Solution {
+    public int hammingWeight(int n) {
+          int sol = 0;
+
+    for (int i = 0; i < 32; ++i){ 
+      if (((n >> i) & 1) == 1){ 
+        sol++;
+
+      }}
+
+    return sol;
+    }
+}
