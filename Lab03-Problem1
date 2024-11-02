@@ -1,0 +1,53 @@
+/*
+We are given N digits. Write an algorithm that composes the largest possible number from those digits.
+
+Input: The first number in the input is the number of digits N, then in the next line are the given digits.
+
+Output: The maximum possible number containing those digits
+
+For example:
+
+Input	
+5
+1 2 3 4 5
+Result
+54321
+
+Input
+7
+Result
+9 7 3 7 9 3 1
+9977331
+
+*/
+
+
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+     Scanner scanner = new Scanner(System.in);
+     int n=scanner.nextInt();
+int[]arr=new int[n];
+for(int i=0;i<n;i++){
+    arr[i]=scanner.nextInt();
+}
+StringBuilder sol= new StringBuilder();
+        for (int i = 0; i < n - 1; i++)
+            for (int j = 0; j < n - i - 1; j++)
+                if (arr[j] > arr[j + 1]) {
+
+                   
+                    int temp = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = temp;
+                }
+
+        int i=n-1;
+        while(i>=0){
+         sol.append(Integer.toString(arr[i]));
+
+            i--;
+        }
+        System.out.println(sol);
+    }
+}
