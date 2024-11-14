@@ -1,0 +1,62 @@
+/*For a given array of integers, find the maximum product formed by multiplication of the numbers of an increasing subarray of the given array.
+Input: The first line of the input contains N, the number of elements of the array. The second line of the input contains the array.
+Output: The maximum product formed in the described way.
+Example:
+
+Input	
+6
+3 100 4 5 150 6
+Result
+45000
+
+Input
+8
+10 22 9 33 21 50 41 60
+Result
+21780000
+
+
+The maximum product is formed from the increasing subarray 3, 100, 150. Note that the longest increasing subarray is 3, 4, 5, 6.
+
+
+
+For example:  */
+
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+public class MaxProduct {
+
+    public static void main(String[] args) throws Exception{
+        // TODO Auto-generated method stub
+        BufferedReader stdin = new BufferedReader(new InputStreamReader(
+                System.in));
+        String s = stdin.readLine();
+        int N = Integer.parseInt(s);
+        int arr[] = new int[N];
+        s = stdin.readLine();
+        String[] pomniza = s.split(" ");
+        for (int i = 0; i < N; i++) {
+            arr[i]=Integer.parseInt(pomniza[i]);
+        }
+        int[] dp=new int[N+1];
+        dp[0]=arr[0];
+        int maks=0;
+     for(int i=0;i<N;i++){
+         dp[i]=arr[i];
+         maks=Math.max(maks,dp[i]);
+       
+     }
+
+     for(int i=1;i<N;i++){
+         for(int j=0;j<i;j++){
+             if(arr[j]<arr[i])
+             dp[i]=Math.max(dp[i],dp[j]*arr[i]);
+             maks=Math.max(maks,dp[i]);
+         }
+     }
+        System.out.print(maks);
+    }
+
+}
