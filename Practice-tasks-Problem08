@@ -1,0 +1,55 @@
+/*
+Find the longest decreasing sequence in an array. The numbers in the sequence don't need to be on consecutive indices in the array.
+
+For example:
+Input
+8
+1 2 3 4 5 6 7 8
+Result
+1
+
+ */
+
+
+import java.util.Scanner;
+
+
+ public class LDS {
+
+
+    private static int najdolgaOpagackaSekvenca(int[] a) {
+int n=a.length;
+        int[] dp = new int[a.length];
+        for(int i=0;i<n;i++){
+            dp[i]=1;
+        }
+        int maks=1;
+        dp[0]=1;
+        for(int i=0;i<n-1;i++){
+            for(int j=i+1;j<n;j++){
+                if(a[j]<a[i]){
+
+                    dp[j]=Math.max(dp[j],dp[i]+1);
+                }
+                maks=Math.max(maks,dp[j]);
+            }
+           
+        }
+return maks;
+
+
+    }
+
+    public static void main(String[] args) {
+        Scanner stdin = new Scanner(System.in);
+
+        int n = stdin.nextInt();
+        int a[] = new int[n];
+        for (int i = 0; i < a.length; i++) {
+            a[i] = stdin.nextInt();
+        }
+        System.out.println(najdolgaOpagackaSekvenca(a));
+    }
+
+
+}
