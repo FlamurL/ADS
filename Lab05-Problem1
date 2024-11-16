@@ -1,0 +1,130 @@
+import java.util.Scanner;
+import java.util.Stack;
+/*
+We are given code in a modified programming language is given, where functions are represented by an opening and closing tag ("functionName" and "endfunctionName"). Your task is to determine whether the given code is valid.
+
+
+
+Example of valid code:
+
+func1
+
+func2
+
+endfunc2
+
+func3
+
+endfunc3
+
+endfunc1
+
+
+Example of invalid code (missing closing tag for func3):
+func1
+
+func2
+
+endfunc2
+
+func3
+
+endfunc1
+
+
+
+Input: Code in a modified programming language, where each tag is written in a new line. Tags are entered until "x" is entered.
+
+Output: "Valid" if the code is valid, "Invalid" if the code is not valid.
+
+For example:
+Input	
+func1
+func2
+endfunc2
+func3
+endfunc3
+endfunc1
+x
+Result
+Valid
+
+Input
+func1
+func2
+endfunc2
+func3
+endfunc1
+x
+Result
+Invalid
+
+
+ */
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner=new Scanner(System.in);
+       Boolean is=true;
+       Boolean sol=true;
+        String s=scanner.next();
+        Stack<Character> stack=new Stack<>();
+        if(s.charAt(0)=='f'){
+            stack.push(s.charAt(s.length()-1));
+
+        }
+        else if(s.charAt(0)=='e'){
+            is=false;
+            System.out.println("Invalid");
+        }
+
+        int cnt=1;
+        if(is) {
+            /*while(!s.equals("x")){
+                if(s.charAt(0)=='f') {
+                    System.out.println(stack.pop());
+                    stack.push(s.charAt(s.length() - 1));
+                }
+s=scanner.next();
+
+            }*/
+
+            s=scanner.next();
+            while (!s.equals("x")) {
+cnt++;
+
+                if (stack.isEmpty() && s.charAt(0)=='e'){
+                    sol=false;
+
+                    break;
+                }
+                if(s.charAt(0)=='f'){
+                    stack.push(s.charAt(s.length()-1));
+                }
+                else if(s.charAt(0)=='e'){
+
+                    if(stack.pop()!=s.charAt(s.length()-1)){
+                        sol=false;
+                        break;
+                    }
+
+
+
+                }
+                s=scanner.next();
+
+
+            }
+            if(!sol)
+                System.out.println("Invalid");
+            else {
+                if(stack.isEmpty())
+                System.out.println("Valid");
+                else
+                    System.out.println("Invalid");
+            }
+        }
+
+
+    }
+}
