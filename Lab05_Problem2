@@ -1,0 +1,184 @@
+import java.util.NoSuchElementException;
+
+import java.util.Scanner;
+/*
+Student Administration is visited by students in order to submit/receive documents. The student can submit documents, request to receive his/her index card, or request to receive his/her high school documents. When the student services start working, students of all three types are served in parallel, but it is important to mention that all 3 counters go with different speeds, so the serving of students is in this order (one student submitting documents, then one student who want to receive their index card, then one student who wants to receive his/her high school documents).
+
+If a student is waiting in line for more than one service at the student services, he/she waits in line first for submitting documents, then in line for receiving his/her index card, and finally in line for receiving his/her high school documents.
+
+Input: The first line contains the number of students who have come to be served by the student service. Then 4 lines are entered for each student, where the first line is the name of the student, and the remaining 3 lines indicate whether there is a need for a given service (submitting documents, taking an index, taking documents from high school, respectively), where 1 means that there is a need for a service of that type, 0 means that there is no need for a service of that type.
+
+        Example:
+
+Ivan Ivanovski
+
+1
+
+        1
+
+        0
+
+means that student Ivan Ivanovski aims to submit documents and get his index.
+
+        Output: Print the order of students in the order they complete all services from the student administration.
+
+For example:
+
+Input	
+2
+Иван Ивановски
+1
+1
+0
+Марија Маркова
+1
+0
+1
+Result
+Иван Ивановски
+Марија Маркова
+
+Input
+3
+Иван Ивановски
+1
+0
+1
+Марија Маркова
+0
+1
+1
+Петар Петров
+1
+1
+0
+Result
+Иван Ивановски
+Петар Петров
+Марија Маркова
+*/
+
+class ArrayQueue<E> {
+    E[] elems;
+    int length, front, rear;
+
+    // Constructor for the queue
+    @SuppressWarnings("unchecked")
+    public ArrayQueue(int maxlength) {
+        elems = (E[]) new Object[maxlength];
+        clear();
+    }
+
+    public boolean isEmpty() {
+        return (length == 0);
+    }
+
+    public int size() {
+        return length;
+    }
+
+    public E peek() {
+        if (length > 0)
+            return elems[front];
+        else
+            throw new NoSuchElementException();
+    }
+
+    public void clear() {
+        length = 0;
+        front = rear = 0;  // arbitrary
+    }
+
+    public void enqueue(E x) {
+        if (length == elems.length) {
+            System.out.println("Queue is full, cannot enqueue element: " + x);
+            return;  // Simply return if the queue is full
+        }
+        elems[rear++] = x;
+        if (rear == elems.length) rear = 0; // wrap-around
+        length++;
+    }
+
+    public E dequeue() {
+        if (length > 0) {
+            E frontmost = elems[front];
+            elems[front++] = null;  // Clear reference
+            if (front == elems.length) front = 0;
+            length--;
+            return frontmost;
+        } else
+            throw new NoSuchElementException();
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+        sc.nextLine();
+
+        Integer[][] students = new Integer[n][3];
+        String[] studentNames = new String[n];
+
+        ArrayQueue<String> q1 = new ArrayQueue<>(n);
+        ArrayQueue<String> q2 = new ArrayQueue<>(n);
+        ArrayQueue<String> q3 = new ArrayQueue<>(n);
+
+        for (int i = 0; i < n; i++) {
+            String name = sc.nextLine();
+            int k1 = sc.nextInt();
+            int k2 = sc.nextInt();
+            int k3 = sc.nextInt();
+            sc.nextLine();
+
+            studentNames[i] = name;
+            students[i][0] = k1;
+            students[i][1] = k2;
+            students[i][2] = k3;
+
+            if (k1 == 1) q1.enqueue(name);
+            if (k2 == 1 && k1 == 0) q2.enqueue(name);
+            if (k3 == 1 && k1 == 0 && k2 == 0) q3.enqueue(name);
+        }
+
+        while (!q1.isEmpty() || !q2.isEmpty() || !q3.isEmpty()) {
+            if (!q1.isEmpty()) {
+                String name = q1.dequeue();
+                processNextService(name, studentNames, students, q2, q3);
+            }
+            if (!q2.isEmpty()) {
+                String name = q2.dequeue();
+                processNextService(name, studentNames, students, q3, null);
+            }
+            if (!q3.isEmpty()) {
+                String name = q3.dequeue();
+                System.out.println(name);
+            }
+        }
+
+        sc.close();
+    }
+
+    private static void processNextService(
+            String name,
+            String[] studentNames,
+            Integer[][] students,
+            ArrayQueue<String> nextQueue,
+            ArrayQueue<String> finalQueue
+    ) {
+        for (int i = 0; i < studentNames.length; i++) {
+            if (studentNames[i].equals(name)) {
+                if (nextQueue != null && students[i][1] == 1) {
+                    students[i][1] = 0;
+                    nextQueue.enqueue(name);
+                } else if (finalQueue != null && students[i][2] == 1) {
+                    students[i][2] = 0;
+                    finalQueue.enqueue(name);
+                } else {
+                    System.out.println(name);
+                }
+                break;
+            }
+        }
+    }
+}
