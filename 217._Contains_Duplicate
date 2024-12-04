@@ -1,0 +1,19 @@
+/*You can find the problem description here: https://leetcode.com/problems/contains-duplicate/description/*/
+
+class Solution {
+    public boolean containsDuplicate(int[] nums) {
+        Map<Integer,Integer>m=new HashMap<>();
+int n=nums.length;
+int k=0;
+while(k<n){
+if(!m.containsKey(nums[k])){
+    m.put(nums[k],1);
+}
+else{
+    return true;
+}
+    k++;
+}
+return false;
+    }
+}
