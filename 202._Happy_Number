@@ -1,0 +1,28 @@
+/*You can find the problem description here: https://leetcode.com/problems/happy-number/*/
+
+class Solution {
+    public boolean isHappy(int n) {
+        Boolean is=true;
+        int k=n;
+        Map<Integer, Boolean>m=new HashMap<>();
+        
+        while(is){
+            int s=0;
+            while(k!=0){
+                  s+=(k%10)*(k%10);
+                  k=k/10;
+            }
+            
+            if(!m.containsKey(s)){ 
+            m.put(s,true);
+if(s==1)
+return true;
+            }
+            else
+            return false;
+
+            k=s;
+        }
+        return true;
+    }
+}
