@@ -1,0 +1,332 @@
+import java.sql.SQLOutput;
+import java.util.NoSuchElementException;
+import java.util.*;
+
+/*
+At the input of this task you will be given rows with the following format:
+First_name Last_name budget ip_address time city price
+Example
+Jovan Todorov 1000 10.73.112.200 15:30 Bitola 760
+Which means that the person with First name and Last name Jovan Todorov, has a budget of 1000 denars, has an IP address with network 10.73.112 and host number 200, and joined at 15:30 to buy a ticked to Bitola which costs 760 denars.
+
+You will be given N such rows, followed by an empty row and M more rows of the same format, which we will use for testing.
+
+From the test row you need to extract the city and then answer the following question with this city:
+
+Of the N people at the input, from the ones who buy a ticket to the same city
+how many of them joined later than 11:59; and
+of these, which one joined the earliest?
+
+(if there are more with the same minimum time then which one is the first one in the entry?) (there will always be at least one)
+
+
+You will need to do this for all M rows for testing!
+
+Recommendation, use OBHT and/or CBHT.
+
+
+ */
+ class CBHT<K, E> {
+	// An object of class CBHT is a closed-bucket hash table, containing
+	// entries of class MapEntry.
+	private SLLNode<MapEntry<K, E>>[] buckets;
+
+	@SuppressWarnings("unchecked")
+	public CBHT(int m) {
+		// Construct an empty CBHT with m buckets.
+		buckets = (SLLNode<MapEntry<K, E>>[]) new SLLNode[m];
+	}
+
+	private int hash(K key) {
+		// Translate key to an index of the array buckets.
+		return Math.abs(key.hashCode()) % buckets.length;
+	}
+
+	public SLLNode<MapEntry<K, E>> search(K targetKey) {
+		// Find which if any node of this CBHT contains an entry whose key is equal to targetKey.
+		// Return a link to that node (or null if there is none).
+		int b = hash(targetKey);
+		SLLNode<MapEntry<K, E>> currNode = buckets[b];
+		while (currNode != null) {
+			MapEntry<K, E> currEntry = currNode.element;
+			if (currEntry.key.equals(targetKey)) return currNode;
+			else currNode = currNode.succ;
+		}
+		return null;
+	}
+
+	public void insert(K key, E val) {
+		// Insert the entry <key, val> into this CBHT.
+		// If entry with same key exists, overwrite it.
+		MapEntry<K, E> newEntry = new MapEntry<>(key, val);
+		int b = hash(key);
+		SLLNode<MapEntry<K, E>> currNode = buckets[b];
+		while (currNode != null) {
+			MapEntry<K, E> currEntry = currNode.element;
+			if (currEntry.key.equals(key)) {
+				// Make newEntry replace the existing entry ...
+				currNode.element = newEntry;
+				return;
+			} else currNode = currNode.succ;
+		}
+		// Insert newEntry at the front of the SLL in bucket b ...
+		buckets[b] = new SLLNode<>(newEntry, buckets[b]);
+	}
+
+	public void delete(K key) {
+		// Delete the entry (if any) whose key is equal to key from this CBHT.
+		int b = hash(key);
+		SLLNode<MapEntry<K, E>> predNode = null, currNode = buckets[b];
+		while (currNode != null) {
+			MapEntry<K, E> currEntry = currNode.element;
+			if (currEntry.key.equals(key)) {
+				if (predNode == null) buckets[b] = currNode.succ;
+				else predNode.succ = currNode.succ;
+				return;
+			} else {
+				predNode = currNode;
+				currNode = currNode.succ;
+			}
+		}
+	}
+
+	public String toString() {
+		String temp = "";
+		for (int i = 0; i < buckets.length; i++) {
+			temp += i + ":";
+			SLLNode<MapEntry<K, E>> curr = buckets[i];
+			while (curr != null) {
+				temp += curr.element.toString() + " ";
+				curr = curr.succ;
+			}
+			temp += "\n";
+		}
+		return temp;
+	}
+}
+
+
+
+ class MapEntry<K, E> {
+	// Each MapEntry object is a pair consisting of a key
+	// and a value (an arbitrary object).
+	K key;
+	E value;
+
+	public MapEntry(K key, E val) {
+		this.key = key;
+		this.value = val;
+	}
+
+	public String toString() {
+		return "<" + key + "," + value + ">";
+	}
+}
+
+ class SLLNode<E> {
+	protected E element;
+	protected SLLNode<E> succ;
+
+	public SLLNode(E elem, SLLNode<E> succ) {
+		this.element = elem;
+		this.succ = succ;
+	}
+
+	@Override
+	public String toString() {
+		return element.toString();
+	}
+}
+
+class Person{
+	 String name;
+	 String surname;
+	 int budget;
+	 String ip;
+	 String time;
+	 String city;
+	 int price;
+
+	public Person(String name, String surname, int budget, String ip, String city, String time, int price) {
+		this.name = name;
+		this.surname = surname;
+		this.budget = budget;
+		this.ip = ip;
+		this.city = city;
+		this.time = time;
+		this.price = price;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public String getSurname() {
+		return surname;
+	}
+
+	public int getBudget() {
+		return budget;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public String getTime() {
+		return time;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public int getPrice() {
+		return price;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setSurname(String surname) {
+		this.surname = surname;
+	}
+
+	public void setBudget(int budget) {
+		this.budget = budget;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Person person = (Person) o;
+		return budget == person.budget && price == person.price && Objects.equals(name, person.name) && Objects.equals(surname, person.surname) && Objects.equals(ip, person.ip) && Objects.equals(time, person.time) && Objects.equals(city, person.city);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name, surname, budget, ip, time, city, price);
+	}
+
+	@Override
+	public String toString() {
+		return "Person{" +
+				"name='" + name + '\'' +
+				", surname='" + surname + '\'' +
+				", budget=" + budget +
+				", ip='" + ip + '\'' +
+				", time='" + time + '\'' +
+				", city='" + city + '\'' +
+				", price=" + price +
+				'}';
+	}
+}
+
+public class Main {
+
+	public static void main(String[] args) {
+	Scanner sc=new Scanner(System.in);
+	int n=sc.nextInt();
+	sc.nextLine();
+CBHT<String, Integer>m1=new CBHT<>(100);
+CBHT<String,Person>m2=new CBHT<>(100);
+for(int i=0;i<n;i++){
+String name=sc.next();
+String surname=sc.next();
+int budget=sc.nextInt();
+String ip=sc.next();
+String time=sc.next();
+String city=sc.next();
+int price=sc.nextInt();
+Person p=new Person(name,surname,budget,ip,city,time,price);
+
+	SLLNode<MapEntry<String,Integer>>ci=m1.search(city);
+	SLLNode<MapEntry<String,Person>>most=m2.search(city);
+	if(ci==null){
+		String[] times=time.split(":");
+		int h=Integer.parseInt(times[0]);
+		if(h>11){
+			m1.insert(city,1);
+		}
+	}
+	else{
+		String[] times=time.split(":");
+		int h=Integer.parseInt(times[0]);
+		int m=Integer.parseInt(times[1]);
+		if(h>11) {
+
+				int val = ci.element.value;
+				m1.insert(city, val + 1);
+
+		}
+	}
+	if(most==null){
+		String[] times=time.split(":");
+		int h=Integer.parseInt(times[0]);
+		if(h>11){
+			m2.insert(city,p);
+		}
+	}
+	else{
+		String[] times=time.split(":");
+		int h=Integer.parseInt(times[0]);
+		int m=Integer.parseInt(times[1]);
+		if(h>11){
+			String val=most.element.value.time;
+			String[] vals=val.split(":");
+			int h1=Integer.parseInt(vals[0]);
+			int m11=Integer.parseInt(vals[1]);
+		
+			if(h1>h){
+				m2.insert(city,p);
+			}
+			else if(h1==h&&m11>m){
+				m2.insert(city,p);
+			}
+		}
+	}
+}
+sc.nextLine();
+int k=sc.nextInt();
+for(int i=0;i<k;i++){
+	String name=sc.next();
+	String surname=sc.next();
+	int budget=sc.nextInt();
+	String ip=sc.next();
+	String time=sc.next();
+	String city=sc.next();
+	int price=sc.nextInt();
+
+	System.out.println("City: "+city+" has the following number of customers:");
+	System.out.println(m1.search(city).element.value);
+
+	System.out.println("The user who logged on earliest after noon from that city is:");
+	SLLNode<MapEntry<String, Person>>p=m2.search(city);
+	System.out.println(p.element.value.name+" "+p.element.value.surname+" with salary "+p.element.value.budget+ " from address "+p.element.value.ip+" who logged in at "+p.element.value.time);
+	System.out.println();
+
+
+}
+
+
+	}
+
+}
