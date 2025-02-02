@@ -1,0 +1,273 @@
+import java.util.NoSuchElementException;
+import java.util.*;
+
+/*
+Student Administration is visited by students in order to submit/receive documents. The student can submit documents, request to receive his/her index card, or request to receive his/her high school documents. When the student services start working, students of all three types are served in parallel, but it is important to mention that all 3 counters go with different speeds, so the serving of students is in this order (one student submitting documents, then one student who want to receive their index card, then one student who wants to receive his/her high school documents).
+
+If a student is waiting in line for more than one service at the student services, he/she waits in line first for submitting documents, then in line for receiving his/her index card, and finally in line for receiving his/her high school documents.
+
+Input: The first line contains the number of students who have come to be served by the student service. Then 4 lines are entered for each student, where the first line is the name of the student, and the remaining 3 lines indicate whether there is a need for a given service (submitting documents, taking an index, taking documents from high school, respectively), where 1 means that there is a need for a service of that type, 0 means that there is no need for a service of that type.
+
+Example:
+
+Ivan Ivanovski
+
+1
+
+1
+
+0
+
+means that student Ivan Ivanovski aims to submit documents and get his index.
+
+Output: Print the order of students in the order they complete all services from the student administration.
+
+For example:
+ */
+ interface Queue<E> {
+	// Elementi na redicata se objekti od proizvolen tip.
+	// Metodi za pristap:
+	public boolean isEmpty();
+	// Vrakja true ako i samo ako redicata e prazena.
+
+	public int size();
+	// Ja vrakja dolzinata na redicata.
+
+	public E peek();
+	// Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+
+	// Metodi za transformacija:
+
+	public void clear();
+	// Ja prazni redicata.
+
+	public void enqueue(E x);
+	// Go dodava x na kraj od redicata.
+
+	public E dequeue();
+	// Go otstranuva i vrakja pochetniot element na redicata.
+}
+
+ class SLLNode<E> {
+	protected E element;
+	protected SLLNode<E> succ;
+
+	public SLLNode(E elem, SLLNode<E> succ) {
+		this.element = elem;
+		this.succ = succ;
+	}
+
+	@Override
+	public String toString() {
+		return element.toString();
+	}
+}
+
+ class LinkedQueue<E> implements Queue<E> {
+
+	// Redicata e pretstavena na sledniot nacin:
+	// length go sodrzi brojot na elementi.
+	// Elementite se zachuvuvaat vo jazli dod SLL
+	// front i rear se linkovi do prviot i posledniot jazel soodvetno.
+	SLLNode<E> front, rear;
+	int length;
+
+	// Konstruktor ...
+
+	public LinkedQueue () {
+		clear();
+	}
+
+	public boolean isEmpty () {
+		// Vrakja true ako i samo ako redicata e prazena.
+		return (length == 0);
+	}
+
+	public int size () {
+		// Ja vrakja dolzinata na redicata.
+		return length;
+	}
+
+	public E peek () {
+		// Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+		if (front == null)
+			throw new NoSuchElementException();
+		return front.element;
+	}
+
+	public void clear () {
+		// Ja prazni redicata.
+		front = rear = null;
+		length = 0;
+	}
+
+	public void enqueue (E x) {
+		// Go dodava x na kraj od redicata.
+		SLLNode<E> latest = new SLLNode<E>(x, null);
+		if (rear != null) {
+			rear.succ = latest;
+			rear = latest;
+		} else
+			front = rear = latest;
+		length++;
+	}
+
+	public E dequeue () {
+		// Go otstranuva i vrakja pochetniot element na redicata.
+		if (front != null) {
+			E frontmost = front.element;
+			front = front.succ;
+			if (front == null)  rear = null;
+			length--;
+			return frontmost;
+		} else
+			throw new NoSuchElementException();
+	}
+
+}
+
+
+
+class ArrayQueue<E> {
+	// Redicata e pretstavena na sledniot nacin:
+	// length go sodrzi brojot na elementi.
+	// Ako length > 0, togash elementite na redicata se zachuvani vo elems[front...rear-1]
+	// Ako rear > front, togash vo  elems[front...maxlength-1] i elems[0...rear-1]
+	E[] elems;
+	int length, front, rear;
+
+	// Konstruktor ...
+
+	@SuppressWarnings("unchecked")
+	public ArrayQueue(int maxlength) {
+		elems = (E[]) new Object[maxlength];
+		clear();
+	}
+
+	public boolean isEmpty() {
+		// Vrakja true ako i samo ako redicata e prazena.
+		return (length == 0);
+	}
+
+	public int size() {
+		// Ja vrakja dolzinata na redicata.
+		return length;
+	}
+
+	public E peek() {
+		// Go vrakja elementot na vrvot t.e. pocetokot od redicata.
+		if (length > 0)
+			return elems[front];
+		else
+			throw new NoSuchElementException();
+	}
+
+	public void clear() {
+		// Ja prazni redicata.
+		length = 0;
+		front = rear = 0;  // arbitrary
+	}
+
+	public void enqueue(E x) {
+		// Go dodava x na kraj od redicata.
+		if (length == elems.length)
+			throw new NoSuchElementException();
+		elems[rear++] = x;
+		if (rear == elems.length) rear = 0;
+		length++;
+	}
+
+	public E dequeue() {
+		// Go otstranuva i vrakja pochetniot element na redicata.
+		if (length > 0) {
+			E frontmost = elems[front];
+			elems[front++] = null;
+			if (front == elems.length) front = 0;
+			length--;
+			return frontmost;
+		} else
+			throw new NoSuchElementException();
+	}
+}
+
+
+class Student{
+	String name;
+	int sc;
+	int fic;
+	int hi;
+
+	public Student(String name, int sc, int fic, int hi) {
+		this.name = name;
+		this.sc = sc;
+		this.fic = fic;
+		this.hi = hi;
+	}
+}
+
+public class Main {
+
+	public static void main(String[] args) {
+	Scanner sc=new Scanner(System.in);
+	int n=sc.nextInt();
+	LinkedQueue<Student>s1=new LinkedQueue<>();
+	LinkedQueue<Student>s2=new LinkedQueue<>();
+	LinkedQueue<Student>s3=new LinkedQueue<>();
+sc.nextLine();
+	for(int i=0;i<n;i++){
+		String name=sc.nextLine();
+		int q1=sc.nextInt();
+		int q2=sc.nextInt();
+		int q3=sc.nextInt();
+		Student s=new Student(name, q1, q2, q3);
+		if(q1==1){
+			s1.enqueue(s);
+		}
+	else if(q2==1){
+		s2.enqueue(s);
+		}
+	else if(q3==1){
+		s3.enqueue(s);
+		}
+sc.nextLine();
+
+	}
+	while(!s1.isEmpty()||!s2.isEmpty()||!s3.isEmpty()){
+		if(!s1.isEmpty()){
+			Student z1=s1.dequeue();
+			if(z1.fic==1)
+				s2.enqueue(z1);
+			else if(z1.hi==1){
+				s3.enqueue(z1);
+			}
+			else{
+				System.out.println(z1.name);
+			}
+		}
+		if(!s2.isEmpty()){
+			Student z1=s2.dequeue();
+
+			 if(z1.hi==1){
+				s3.enqueue(z1);
+			}
+			else{
+				System.out.println(z1.name);
+			}
+		}
+		if(!s3.isEmpty()){
+			Student z1=s3.dequeue();
+
+
+				System.out.println(z1.name);
+
+		}
+
+
+
+	}
+
+
+
+	}
+
+}
